@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 style="padding: 3rem 2rem 2rem 2rem;">{{ book.title }}</h1>
+<hr style="width: 80%;">
+
+
+<div class="container" style="align-items: center;">
+    <div class="row">
+        <div class="col-xs-9 col-md-6" align="center">
+            <img src="{{book.cover}}" style="width: 22rem; padding: 1rem 1rem 1rem 1rem; align-self:center;">  
+        </div>
+        <div class="col-xs-9 col-md-6">
+            <div class="card my-3">
+                <div class="card-body">
+                    <p style="padding: 1rem 1rem 1rem 1rem; white-space: pre-line;">{{ book.introduce }}</p>
+                </div>
+                {% if request.user.is_authenticated %}
+                {% if book.available %}
+                    <a href="{% url 'saebyuk:rent' book.id %}" class="btn btn-primary" role="button">대출하러 가기</a>
+                {% elif request.user == book.thief %}
+                <form method="POST">
+                {% csrf_token %}
+                <!-- 오류표시 Start -->
+                {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for field in form %}
+                        {% if field.errors %}
+                            <strong>{{ field.label }}</strong>
+                            {{ field.errors }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <!-- 오류표시 End -->
+                    <button type="submit" class="btn btn-warning" style="width: 100%;">반납하기</button>
+                </form>
+                {% else %}
+                    <button type="button" class="btn btn-danger" style="width: 100%;">대출이 불가합니다.</button>
+                {% endif %}
+                {% else %}
+                <button type="button" class="btn btn-warning" style="width: 100%;"><strong>로그인</strong> 후 대출 가능합니다.</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div> <br><br><hr><br>
+<div style="margin: 1rem 10rem 5rem 10rem; float: left;">
+    <p><strong>{{book.author}}</strong> 씀.</p>
+    <p>{{book.create_date}} 등록.</p>
+</div>
+
+{% if book.return_date %}
+<div style="margin: 1rem 10rem 5rem 10rem; float: left;">
+    <p><strong>{{book.thief}}</strong>가 대여함.</p>
+    <p>{{book.return_date|date:"Y년 m월 d일"}}에 반납 예정.</p>
+</div>
+{% endif %}
+
+{% endblock %}
