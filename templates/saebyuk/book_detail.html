@@ -45,13 +45,13 @@
         </div>
     </div>
 </div> <br><br><hr><br>
-<div style="margin: 1rem 10rem 5rem 10rem; float: left;">
+<div class="container" style="float: left;">
     <p><strong>{{book.author}}</strong> 씀.</p>
     <p>{{book.create_date}} 등록.</p>
 </div>
 
 {% if book.return_date %}
-<div style="margin: 1rem 10rem 5rem 10rem; float: left;">
+<div class="container" style="float: left;">
     <p><strong>{{book.thief}}</strong>가 대여함.</p>
     <p>{{book.return_date|date:"Y년 m월 d일"}}에 반납 예정.</p>
 </div>
