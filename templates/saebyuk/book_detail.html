@@ -16,45 +16,57 @@
                     <p style="padding: 1rem 1rem 1rem 1rem; white-space: pre-line;">{{ book.introduce }}</p>
                 </div>
                 {% if request.user.is_authenticated %}
-                {% if book.available %}
-                    <a href="{% url 'saebyuk:rent' book.id %}" class="btn btn-primary" role="button">대출하러 가기</a>
-                {% elif request.user == book.thief %}
-                <form method="POST">
-                {% csrf_token %}
-                <!-- 오류표시 Start -->
-                {% if form.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {% for field in form %}
-                        {% if field.errors %}
-                            <strong>{{ field.label }}</strong>
-                            {{ field.errors }}
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                {% endif %}
-                <!-- 오류표시 End -->
-                    <button type="submit" class="btn btn-warning" style="width: 100%;">반납하기</button>
-                </form>
+                    {% if book.available %}
+                        <form method="POST" id="rentplz">
+                        {% csrf_token %}
+                        <!-- 오류표시 Start -->
+                            {% if form.errors %}
+                                <div class="alert alert-danger" role="alert">
+                                    {% for field in form %}
+                                    {% if field.errors %}
+                                        <strong>{{ field.label }}</strong>{{ field.errors }}
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <!-- 오류표시 End -->
+                            <input type="hidden" id="bookid" name="book_id" value="{{book.id}}"></input>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">대출하기</button>
+                        </form>
+                    {% elif request.user == book.thief %}
+                        
+                        <a href="/saebyuk/return/{{ book.id }}/" class="btn btn-warning" style="width: 100%;">반납하기</a>
+                        
+                    {% else %}
+                        <button type="button" class="btn btn-danger" style="width: 100%;">대출이 불가합니다.</button>
+                    {% endif %}
                 {% else %}
-                    <button type="button" class="btn btn-danger" style="width: 100%;">대출이 불가합니다.</button>
-                {% endif %}
-                {% else %}
-                <button type="button" class="btn btn-warning" style="width: 100%;"><strong>로그인</strong> 후 대출 가능합니다.</button>
+                    <button type="button" class="btn btn-warning" style="width: 100%;"><strong>로그인</strong> 후 대출 가능합니다.</button>
                 {% endif %}
             </div>
         </div>
     </div>
 </div> <br><br><hr><br>
-<div class="container" style="float: left;">
-    <p><strong>{{book.author}}</strong> 씀.</p>
-    <p>{{book.create_date}} 등록.</p>
-</div>
 
-{% if book.return_date %}
-<div class="container" style="float: left;">
-    <p><strong>{{book.thief}}</strong>가 대여함.</p>
-    <p>{{book.return_date|date:"Y년 m월 d일"}}에 반납 예정.</p>
-</div>
-{% endif %}
+<table>
+    <tr>
+        <th>
+            <div class="container" style="float: left;">
+                <p style="font-weight: normal;"><strong>{{book.author}}</strong> 씀.</p>
+                <p style="font-weight: normal;">{{book.create_date}} 등록.</p>
+            </div>
+        </th>
+        <th>
+            {% if book.return_date %}
+            <div class="container" style="float: left;">
+                <p style="font-weight: normal;"><strong>{{book.thief}}</strong>가 대여함.</p>
+                <p style="font-weight: normal;">{{book.return_date|date:"Y년 m월 d일"}}에 반납 예정.</p>
+            </div>
+            {% endif %}
+        </th>
+    </tr>
+</table>
+
+
 
 {% endblock %}

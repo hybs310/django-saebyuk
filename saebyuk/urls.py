@@ -8,5 +8,5 @@ app_name = 'saebyuk'
 urlpatterns = [
     path('', views.index, name='index'),
     path('<int:book_id>/', views.detail, name='detail'),
-    path('rent/<int:book_id>/', views.rent, name='rent'),
+    path('return/<int:book_id>/', views.book_return, name='book_return'),
 ] 
